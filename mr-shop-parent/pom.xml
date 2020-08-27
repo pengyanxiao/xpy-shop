@@ -9,9 +9,9 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>mr-shop-basics</module>
-        <module>mr-shop-commoms</module>
         <module>mr-shop-service</module>
         <module>mr-shop-service-api</module>
+        <module>mr-shop-commons</module>
     </modules>
 
     <!--父级项目不需要打包所有packging的类型为pom-->
