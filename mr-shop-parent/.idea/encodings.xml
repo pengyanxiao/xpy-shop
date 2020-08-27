@@ -2,5 +2,8 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/mr-shop-basics/mr-shop-basic-eureka-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mr-shop-commons/mr-shop-common-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mr-shop-service-api/mr-shop-service-api-xxx/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mr-shop-service/mr-shop-service-xxx/src/main/java" charset="UTF-8" />
   </component>
 </project>

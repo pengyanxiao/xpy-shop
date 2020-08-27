@@ -6,7 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="mr-shop-service-xxx" />
         <module name="mr-shop-basic-eureka-server" />
+        <module name="mr-shop-service-api-xxx" />
+        <module name="mr-shop-common-core" />
       </profile>
     </annotationProcessing>
   </component>
@@ -14,9 +17,12 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="mr-shop-basic-eureka-server" options="-parameters" />
       <module name="mr-shop-basics" options="-parameters" />
+      <module name="mr-shop-common-core" options="-parameters" />
       <module name="mr-shop-commons" options="-parameters" />
       <module name="mr-shop-service" options="-parameters" />
       <module name="mr-shop-service-api" options="-parameters" />
+      <module name="mr-shop-service-api-xxx" options="-parameters" />
+      <module name="mr-shop-service-xxx" options="-parameters" />
     </option>
   </component>
 </project>
