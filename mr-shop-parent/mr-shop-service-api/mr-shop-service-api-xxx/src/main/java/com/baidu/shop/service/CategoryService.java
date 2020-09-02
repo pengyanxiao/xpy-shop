@@ -37,4 +37,9 @@ public interface CategoryService {
     @ApiOperation(value = "删除分类")
     @DeleteMapping(value = "category/delete")
     Result<JsonObject> deleteCategory(Integer id);
+
+    @ApiOperation(value = "通过品牌id查询商品分类")
+    @GetMapping(value = "category/getByBrand")
+    public Result<List<CategoryEntity>> getByBrand(Integer brandId);
+
 }

@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -25,5 +26,9 @@ public interface BrandService {
     @ApiOperation("新增品牌")
     @PostMapping(value = "brand/save")
     Result<JsonObject> saveBrand(@Validated({MrOperation.Add.class}) @RequestBody BrandDTO brandDTO);
+
+    @ApiOperation("修改品牌")
+    @PutMapping(value = "brand/save")
+    Result<JsonObject> editBrand(@Validated(MrOperation.Update.class) @RequestBody BrandDTO brandDTO);
 
 }
