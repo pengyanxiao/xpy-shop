@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="mr-shop-basic-zuul-server" />
-        <module name="mr-shop-service-xxx" />
-        <module name="mr-shop-basic-eureka-server" />
         <module name="mr-shop-service-api-xxx" />
         <module name="mr-shop-common-core" />
+        <module name="mr-shop-basic-zuul-server" />
+        <module name="mr-shop-basic-eureka-server" />
+        <module name="mr-shop-basics-upload-server" />
+        <module name="mr-shop-service-xxx" />
       </profile>
     </annotationProcessing>
   </component>
@@ -19,6 +20,7 @@
       <module name="mr-shop-basic-eureka-server" options="-parameters" />
       <module name="mr-shop-basic-zuul-server" options="-parameters" />
       <module name="mr-shop-basics" options="-parameters" />
+      <module name="mr-shop-basics-upload-server" options="-parameters" />
       <module name="mr-shop-common-core" options="-parameters" />
       <module name="mr-shop-commons" options="-parameters" />
       <module name="mr-shop-service" options="-parameters" />

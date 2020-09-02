@@ -6,6 +6,7 @@ import com.baidu.shop.base.Result;
 import com.baidu.shop.entity.CategoryEntity;
 import com.baidu.shop.mapper.CategoryMapper;
 import com.baidu.shop.service.CategoryService;
+import com.baidu.shop.utils.ObjectUtil;
 import com.google.gson.JsonObject;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
     public Result<JsonObject> deleteCategory(Integer id) {
 
         CategoryEntity categoryEntity = categoryMapper.selectByPrimaryKey(id);
-        if(categoryEntity == null){
+        if(ObjectUtil.isNull(id)){
             return this.setResultError("id不存在");
         }
 
@@ -80,7 +81,7 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
         example.createCriteria().andEqualTo("parentId",categoryEntity.getParentId());
         List<CategoryEntity> list = categoryMapper.selectByExample(example);
         //查询
-        if(list.size() == 1){
+        if(!list.isEmpty() && list.size() == 1){
             CategoryEntity parenCategoryEntity = new CategoryEntity();
             parenCategoryEntity.setId(categoryEntity.getParentId());
             parenCategoryEntity.setIsParent(0);
