@@ -93,6 +93,7 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
         return this.setResultSuccess();
     }
 
+    @Transactional
     @Override
     public Result<List<CategoryEntity>> getByBrand(Integer brandId) {
 
