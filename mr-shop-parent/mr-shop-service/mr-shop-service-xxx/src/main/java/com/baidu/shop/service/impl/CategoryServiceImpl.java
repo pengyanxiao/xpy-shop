@@ -3,8 +3,14 @@ package com.baidu.shop.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.shop.base.BaseApiService;
 import com.baidu.shop.base.Result;
+import com.baidu.shop.entity.BrandEntity;
+import com.baidu.shop.entity.CategoryBrandEntity;
 import com.baidu.shop.entity.CategoryEntity;
+import com.baidu.shop.entity.SpecGroupEntity;
+import com.baidu.shop.mapper.BrandMapper;
+import com.baidu.shop.mapper.CategoryBrandMapper;
 import com.baidu.shop.mapper.CategoryMapper;
+import com.baidu.shop.mapper.SpecGroupMapper;
 import com.baidu.shop.service.CategoryService;
 import com.baidu.shop.utils.ObjectUtil;
 import com.google.gson.JsonObject;
@@ -29,6 +35,12 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
 
     @Resource
     private CategoryMapper categoryMapper;
+
+    @Resource
+    private SpecGroupMapper specGroupMapper;
+
+    @Resource
+    private CategoryBrandMapper categoryBrandMapper;
 
     @Override
     public Result<List<CategoryEntity>> getCategoryByPid(Integer pid) {
@@ -88,6 +100,22 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
             categoryMapper.updateByPrimaryKeySelective(parenCategoryEntity);
 
         }
+        //分类绑定规格组删除
+        Example example1 = new Example(SpecGroupEntity.class);
+        example1.createCriteria().andEqualTo("cid",id);
+        List<SpecGroupEntity> list1 = specGroupMapper.selectByExample(example1);
+        if(list1.size() == 1){
+            return this.setResultError("当前父节点下有规格组,不能删除");
+        }
+
+        //分类绑定品牌删除
+        Example example2 = new Example(CategoryBrandEntity.class);
+        example2.createCriteria().andEqualTo("categoryId",id);
+        List<CategoryBrandEntity> list2 = categoryBrandMapper.selectByExample(example2);
+        if(list2.size() > 0){
+            return this.setResultError("当前父节点绑定品牌,不可删除");
+        }
+
 
         categoryMapper.deleteByPrimaryKey(id);//删除
         return this.setResultSuccess();

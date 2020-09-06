@@ -5,6 +5,7 @@ import com.baidu.shop.base.BaseApiService;
 import com.baidu.shop.base.Result;
 import com.baidu.shop.dto.SpecGroupDTO;
 import com.baidu.shop.dto.SpecParamDTO;
+import com.baidu.shop.entity.CategoryEntity;
 import com.baidu.shop.entity.SpecGroupEntity;
 import com.baidu.shop.entity.SpecParamEntity;
 import com.baidu.shop.mapper.SpecGroupMapper;
@@ -69,7 +70,17 @@ public class SpecificationServiceImpl extends BaseApiService implements Specific
     @Transactional
     @Override
     public Result<JSONObject> delete(Integer id) {
+        //删除
         specGroupMapper.deleteByPrimaryKey(id);
+
+        //规格组规格参数删除
+        Example example = new Example(SpecParamEntity.class);
+        example.createCriteria().andEqualTo("groupId",id);
+        List<SpecParamEntity> list = specParamMapper.selectByExample(example);
+        if(list.size() > 0){
+            return this.setResultError("该规格组下有参数存在,不能删除");
+        }
+
         return this.setResultSuccess();
     }
 
