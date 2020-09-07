@@ -92,14 +92,7 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
         Example example = new Example(CategoryEntity.class);
         example.createCriteria().andEqualTo("parentId",categoryEntity.getParentId());
         List<CategoryEntity> list = categoryMapper.selectByExample(example);
-        //查询
-        if(!list.isEmpty() && list.size() == 1){
-            CategoryEntity parenCategoryEntity = new CategoryEntity();
-            parenCategoryEntity.setId(categoryEntity.getParentId());
-            parenCategoryEntity.setIsParent(0);
-            categoryMapper.updateByPrimaryKeySelective(parenCategoryEntity);
 
-        }
         //分类绑定规格组删除
         Example example1 = new Example(SpecGroupEntity.class);
         example1.createCriteria().andEqualTo("cid",id);
@@ -116,6 +109,14 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
             return this.setResultError("当前父节点绑定品牌,不可删除");
         }
 
+        //查询
+        if(!list.isEmpty() && list.size() == 1){
+            CategoryEntity parenCategoryEntity = new CategoryEntity();
+            parenCategoryEntity.setId(categoryEntity.getParentId());
+            parenCategoryEntity.setIsParent(0);
+            categoryMapper.updateByPrimaryKeySelective(parenCategoryEntity);
+
+        }
 
         categoryMapper.deleteByPrimaryKey(id);//删除
         return this.setResultSuccess();
