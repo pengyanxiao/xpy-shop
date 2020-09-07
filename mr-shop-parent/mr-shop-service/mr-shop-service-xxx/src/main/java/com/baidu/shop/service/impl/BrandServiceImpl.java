@@ -42,24 +42,28 @@ public class BrandServiceImpl extends BaseApiService implements BrandService {
     @Resource
     private CategoryBrandMapper categoryBrandMapper;
 
-
     @Override
     public Result<PageInfo<BrandEntity>> getBrandInfo(BrandDTO brandDTO) {
 
         //分页
-        PageHelper.startPage(brandDTO.getPage(),brandDTO.getRows());
+        if(ObjectUtil.isNotNull(brandDTO.getPage()) && ObjectUtil.isNotNull(brandDTO.getRows())){
+            PageHelper.startPage(brandDTO.getPage(),brandDTO.getRows());
+        }
         //排序 条件查询
         Example example = new Example(BrandEntity.class);
         //if(ObjectUtil.isNotNull(sort)) example.setOrderByClause(sort +" "+(desc?"desc":""));
         if(StringUtil.isNotEmpty(brandDTO.getSort())) example.setOrderByClause(brandDTO.getOrderByClause());
 
         //条件查询
-/*
-        Example.Criteria criteria = example.createCriteria();
-        if (StringUtil.isNotEmpty(brandDTO.getName())) criteria.andLike("name","%" + brandDTO.getName() + "%");
-*/
+/*      Example.Criteria criteria = example.createCriteria();
+        if (StringUtil.isNotEmpty(brandDTO.getName())) criteria.andLike("name","%" + brandDTO.getName() + "%");*/
         if(StringUtil.isNotEmpty(brandDTO.getName()))
             example.createCriteria().andLike("name","%" + brandDTO.getName()+ "%");
+
+        Example.Criteria criteria = example.createCriteria();
+        if(ObjectUtil.isNotNull(brandDTO.getId())){
+            criteria.andEqualTo("id",brandDTO.getId());
+        }
 
         //查询
         List<BrandEntity> list = brandMapper.selectByExample(example);
@@ -88,18 +92,15 @@ public class BrandServiceImpl extends BaseApiService implements BrandService {
 
         //新增数据
         brandMapper.insertSelective(brandEntity);
-
             //通过split方法分割字符串的Array
             //Arrays.asList将Array转换为List
             //使用JDK1,8的stream
             //使用map函数返回一个新的数据
             //collect 转换集合类型Stream<T>
             //Collectors.toList())将集合转换为List类型
-
            /* String[] cidArr = brandDTO.getCategory().split(",");
             List<String> list = Arrays.asList(cidArr);
             List<CategoryBrandEntity> categoryBrandEntities = new ArrayList<>();
-
             list.stream().forEach(cid -> {
                 CategoryBrandEntity categoryBrandEntity = new CategoryBrandEntity();
                 categoryBrandEntity.setCategoryId(StringUtil.toInteger(cid));
@@ -107,7 +108,6 @@ public class BrandServiceImpl extends BaseApiService implements BrandService {
 
                 categoryBrandEntities.add(categoryBrandEntity);
             });*/
-
             //批量新增
            /*for (String s : cidArr) {
             CategoryBrandEntity entity = new CategoryBrandEntity();
@@ -115,8 +115,7 @@ public class BrandServiceImpl extends BaseApiService implements BrandService {
             entity.setBrandId(brandEntity.getId());
 
             categoryBrandMapper.insertSelective(entity);
-          }*/
-
+         }*/
         //代码优化
         this.insertCategoryAndBrand(brandDTO,brandEntity);
 
