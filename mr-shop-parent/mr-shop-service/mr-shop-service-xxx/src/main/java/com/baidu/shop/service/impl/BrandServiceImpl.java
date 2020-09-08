@@ -42,9 +42,17 @@ public class BrandServiceImpl extends BaseApiService implements BrandService {
     @Resource
     private CategoryBrandMapper categoryBrandMapper;
 
+    //通过分类id获取品牌
+    @Override
+    public Result<List<BrandEntity>> getBrandByCategory(Integer cid) {
+
+        List<BrandEntity> list = brandMapper.getBrandByCategory(cid);
+
+        return this.setResultSuccess(list);
+    }
+
     @Override
     public Result<PageInfo<BrandEntity>> getBrandInfo(BrandDTO brandDTO) {
-
         //分页
         if(ObjectUtil.isNotNull(brandDTO.getPage()) && ObjectUtil.isNotNull(brandDTO.getRows())){
             PageHelper.startPage(brandDTO.getPage(),brandDTO.getRows());

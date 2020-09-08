@@ -5,7 +5,6 @@ import com.baidu.shop.base.BaseApiService;
 import com.baidu.shop.base.Result;
 import com.baidu.shop.dto.SpecGroupDTO;
 import com.baidu.shop.dto.SpecParamDTO;
-import com.baidu.shop.entity.CategoryEntity;
 import com.baidu.shop.entity.SpecGroupEntity;
 import com.baidu.shop.entity.SpecParamEntity;
 import com.baidu.shop.mapper.SpecGroupMapper;
@@ -87,12 +86,17 @@ public class SpecificationServiceImpl extends BaseApiService implements Specific
 //-------- 规格参数 ----------------------------------------
     @Override
     public Result<List<SpecParamEntity>> getSpecParam(SpecParamDTO specParamDTO) {
+        //if(ObjectUtil.isNull(specParamDTO.getGroupId())) return this.setResultError("规格组id不能为空");
+       Example example = new Example(SpecParamEntity.class);
+//        example.createCriteria().andEqualTo("groupId",specParamDTO.getGroupId());
 
-        if(ObjectUtil.isNull(specParamDTO.getGroupId())) return this.setResultError("规格组id不能为空");
-
-        Example example = new Example(SpecParamEntity.class);
-
-        example.createCriteria().andEqualTo("groupId",specParamDTO.getGroupId());
+        Example.Criteria criteria = example.createCriteria();
+        if(ObjectUtil.isNotNull(specParamDTO.getGroupId())){
+            criteria.andEqualTo("groupId",specParamDTO.getGroupId());
+        }
+        if(ObjectUtil.isNotNull(specParamDTO.getCid())){
+            criteria.andEqualTo("cid",specParamDTO.getCid());
+        }
 
         List<SpecParamEntity> list = specParamMapper.selectByExample(example);
 

@@ -44,7 +44,7 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsService {
     private CategoryMapper categoryMapper;
 
     @Override
-    public Result<Map<String, Object>> getSpuInfo(SpuDTO spuDTO) {
+    public Result<List<SpuDTO>> getSpuInfo(SpuDTO spuDTO) {
         //分页
         if (ObjectUtil.isNotNull(spuDTO.getPage()) && ObjectUtil.isNotNull(spuDTO.getRows())) {
             PageHelper.startPage(spuDTO.getPage(), spuDTO.getRows());
