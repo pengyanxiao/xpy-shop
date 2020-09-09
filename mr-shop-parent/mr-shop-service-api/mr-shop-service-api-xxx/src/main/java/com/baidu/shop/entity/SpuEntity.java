@@ -2,6 +2,8 @@ package com.baidu.shop.entity;
 
 import lombok.Data;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
@@ -16,6 +18,7 @@ import java.util.Date;
 @Data
 @Table(name = "tb_spu")
 public class SpuEntity {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
 
@@ -37,6 +40,6 @@ public class SpuEntity {
 
     private Date createTime;
 
-    private Data lastUpdateTie;
+    private Date lastUpdateTime;
 
 }
