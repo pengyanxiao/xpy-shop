@@ -163,20 +163,6 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsService {
 
         //代码优化
         this.addSkusAndStocks(spuDTO.getSkus(),spuId,date);
-//        spuDTO.getSkus().stream().forEach(skuDTO -> {
-//            //新增sku
-//            SkuEntity skuEntity = BaiduBrandUtil.copyProperties(skuDTO, SkuEntity.class);
-//            skuEntity.setSpuId(spuId);
-//            skuEntity.setCreateTime(date);
-//            skuEntity.setLastUpdateTime(date);
-//            skuMapper.insertSelective(skuEntity);
-//
-//            //新增stock
-//            StockEntity stockEntity = new StockEntity();
-//            stockEntity.setSkuId(skuEntity.getId());
-//            stockEntity.setStock(skuDTO.getStock());
-//            stockMapper.insertSelective(stockEntity);
-//        });
 
         return this.setResultSuccess();
    }
@@ -229,6 +215,26 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsService {
         return this.setResultSuccess();
     }
 
+    //商品上架与下架
+    @Transactional
+    @Override
+    public Result<JSONObject> upAndDown(SpuDTO spuDTO) {
+
+        SpuEntity spuEntity = BaiduBrandUtil.copyProperties(spuDTO, SpuEntity.class);
+        spuEntity.setId(spuDTO.getId());
+
+        if(spuEntity.getSaleable() == 1){
+            spuEntity.setSaleable(0);
+            spuGoodsMapper.updateByPrimaryKeySelective(spuEntity);
+            return this.setResultSuccess("下架成功");
+        }else{
+            spuEntity.setSaleable(1);
+            spuGoodsMapper.updateByPrimaryKeySelective(spuEntity);
+            return this.setResultSuccess("上架成功");
+        }
+    }
+
+
     //删除代码优化
     private void deleteSkuIdAndSpuId(Integer spuId){
         Example example = new Example(SkuEntity.class);
@@ -236,10 +242,12 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsService {
         //通过spuId查询出来将要被删除的Sku
         List<Long> skuIdList = skuMapper.selectByExample(example)
                 .stream().map(sku -> sku.getId()).collect(Collectors.toList());
-        //通过skuId集合删除sku
-        skuMapper.deleteByIdList(skuIdList);
-        //通过skuId集合删除stock
-        stockMapper.deleteByIdList(skuIdList);
+        if(skuIdList.size() > 0){ //判断 以防止表删除
+            //通过skuId集合删除sku
+            skuMapper.deleteByIdList(skuIdList);
+            //通过skuId集合删除stock
+            stockMapper.deleteByIdList(skuIdList);
+        }
     }
 
     //新增-修改提取代码重复(代码优化)
