@@ -15,6 +15,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>mr-shop-service-xxx</module>
+        <module>mr-shop-service-search</module>
     </modules>
 
     <dependencies>

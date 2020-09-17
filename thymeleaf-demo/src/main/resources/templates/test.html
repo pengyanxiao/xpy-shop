@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>测试thymeleaf</title>
+</head>
+<body>
+    你好,, <span th:text="${name}"></span>
+    <hr>
+    <!-- th:指令依赖于h5-->
+    你好<span th:text="${stu.code}"></span><br/>
+    <!--  data-th-text 指令支持非 h5-->
+    密码是:<span data-th-text="${stu.pass}"></span><br/>
+    <!--对象['属性值'] 如果变量是动态的，可以用此属性-->
+    你的年龄:<span th:text="${stu['age']}"></span><br/>
+    <!--对象的value中有html需要渲染的使用 utext 输出-->
+    你喜欢的颜色:<span th:utext="${stu.likeColor}"></span>
+    <p>--------------------------</p>
+
+    <!-- 自定义变量  -->
+    <div th:object="${stu}">
+        <span th:text="*{code}"></span><br/>
+        <span th:text="*{pass}"></span><br/>
+        <span th:text="*{age}"></span><br/>
+        <span th:text="*{likeColor}"></span>
+    </div>
+    <p>--------------------------</p>
+    <!-- 方法 可以调用字符串截取，分割等函数-->
+    <span th:text="${stu.code.substring(2)}"></span><br/>
+    <span th:text="${stu.code.split('')[1]}"></span><br/>
+    <p>--------------------------</p>
+
+    <!--字面值-->
+    字符串字面值:<span th:text="66116"></span><br/>
+    <!--数字字面值-->
+    数字:<span th:text="1024/2"></span><br/>
+   <!-- 布尔类型的字面值是true或false-->
+    <span th:if="${stu.age} >=18">
+        成年
+    </span>
+    <p>--------------------------</p>
+
+    <!--拼接-->
+    <span th:text="'你好' + ${stu.code} + '哈喽'"></span><br/>
+    <span th:text="|你好${stu.code}哈喽|"></span>
+    <p>--------------------------</p>
+
+    <!--运算-->
+    <!--算术运算 支持的算术运算符：+ - * / %-->
+    <span th:text="${stu.age} * 2"></span><br/>
+    <!--比较运算-->
+    <!--条件运算-->
+    <span th:text="${stu.age} >= 18 ? '成年':'不成年' "></span><br/>
+    <span th:text="${stu.code} ?: ''"></span>
+
+</body>
+</html>

@@ -30,7 +30,7 @@ public class SpuEntity {
 
     private Integer cid2;
 
-    private Integer cid3;
+    private Integer cid3;//商品列表id
 
     private Integer brandId;
 

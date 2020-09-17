@@ -12,8 +12,13 @@
         <module name="mr-shop-basic-eureka-server" />
         <module name="mr-shop-basics-upload-server" />
         <module name="mr-shop-service-xxx" />
+        <module name="mr-shop-service-api-search" />
+        <module name="mr-shop-service-search" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="mr-elasticsearch" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -25,7 +30,9 @@
       <module name="mr-shop-commons" options="-parameters" />
       <module name="mr-shop-service" options="-parameters" />
       <module name="mr-shop-service-api" options="-parameters" />
+      <module name="mr-shop-service-api-search" options="-parameters" />
       <module name="mr-shop-service-api-xxx" options="-parameters" />
+      <module name="mr-shop-service-search" options="-parameters" />
       <module name="mr-shop-service-xxx" options="-parameters" />
     </option>
   </component>
