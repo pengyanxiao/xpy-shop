@@ -13,13 +13,21 @@ import com.baidu.shop.feign.GoodsFeign;
 import com.baidu.shop.feign.SpecificationFeign;
 import com.baidu.shop.service.ShopElasticsearchService;
 import com.baidu.shop.status.HTTPStatus;
+import com.baidu.shop.utils.ESHighLightUtil;
 import com.baidu.shop.utils.JSONUtil;
+import com.baidu.shop.utils.StringUtil;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.IndexOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -193,5 +201,38 @@ public class ShopElasticsearchServiceImpl extends BaseApiService implements Shop
         elasticsearchRestTemplate.save(goodsDocs);
 
         return this.setResultSuccess();
+    }
+
+    @Override
+    public Result<List<GoodsDoc>> search(String search, Integer page) {
+        //判断内容不能为空
+        if (!StringUtil.isEmpty(search)) {
+            return this.setResultError("查询内容不能为空");
+        }
+
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder();
+        //match通过值只能查询一个字段 和 multiMatch 通过值查询多个字段???
+        searchQueryBuilder.withQuery(QueryBuilders.multiMatchQuery(search,"title","brandName","categoryName"));
+        //高亮
+        searchQueryBuilder.withHighlightBuilder(ESHighLightUtil.getHighlightBuilder("title"));
+        //分页
+        searchQueryBuilder.withPageable(PageRequest.of(page-1,10));
+
+        SearchHits<GoodsDoc> searchHits = elasticsearchRestTemplate.search(searchQueryBuilder.build(), GoodsDoc.class);
+
+        List<SearchHit<GoodsDoc>> highLightHit = ESHighLightUtil.getHighLightHit(searchHits.getSearchHits());
+        //返回的数据
+        List<GoodsDoc> collect = highLightHit.stream().map(searchHit -> searchHit.getContent()).collect(Collectors.toList());
+
+        //分页
+        long total = searchHits.getTotalHits();
+        long totalPage = Double.valueOf(Math.ceil(Long.valueOf(total).doubleValue() / 10)).longValue();
+
+        Map<String, Long> map = new HashMap<>();
+        map.put("total",total);
+        map.put("totalPage",totalPage);
+        map.toString();
+        //传到前台是一个json字符串-->JSON.parse(message) obj.total,obj.totalPage
+        return this.setResult(HTTPStatus.OK,JSONUtil.toJsonString(map),collect);
     }
 }
