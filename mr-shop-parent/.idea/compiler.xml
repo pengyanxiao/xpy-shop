@@ -7,13 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="mr-shop-service-api-xxx" />
-        <module name="mr-shop-common-core" />
         <module name="mr-shop-basic-zuul-server" />
         <module name="mr-shop-basic-eureka-server" />
+        <module name="mr-shop-service-api-search" />
         <module name="mr-shop-basics-upload-server" />
         <module name="mr-shop-service-xxx" />
-        <module name="mr-shop-service-api-search" />
         <module name="mr-shop-service-search" />
+        <module name="mr-shop-common-core" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

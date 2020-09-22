@@ -7,10 +7,15 @@ import com.baidu.shop.document.GoodsDoc;
 import com.baidu.shop.dto.SkuDTO;
 import com.baidu.shop.dto.SpecParamDTO;
 import com.baidu.shop.dto.SpuDTO;
+import com.baidu.shop.entity.BrandEntity;
+import com.baidu.shop.entity.CategoryEntity;
 import com.baidu.shop.entity.SpecParamEntity;
 import com.baidu.shop.entity.SpuDetailEntity;
+import com.baidu.shop.feign.BrandFeign;
+import com.baidu.shop.feign.CategoryFeign;
 import com.baidu.shop.feign.GoodsFeign;
 import com.baidu.shop.feign.SpecificationFeign;
+import com.baidu.shop.response.GoodsResponse;
 import com.baidu.shop.service.ShopElasticsearchService;
 import com.baidu.shop.status.HTTPStatus;
 import com.baidu.shop.utils.ESHighLightUtil;
@@ -21,6 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
@@ -55,6 +64,12 @@ public class ShopElasticsearchServiceImpl extends BaseApiService implements Shop
 
     @Autowired
     private ElasticsearchRestTemplate elasticsearchRestTemplate;
+
+    @Autowired
+    private CategoryFeign categoryFeign;
+
+    @Autowired
+    private BrandFeign brandFeign;
 
     private List<GoodsDoc> esGoodsInfo() {
         //查询多个spu数据
@@ -204,35 +219,80 @@ public class ShopElasticsearchServiceImpl extends BaseApiService implements Shop
     }
 
     @Override
-    public Result<List<GoodsDoc>> search(String search, Integer page) {
+    public GoodsResponse search(String search, Integer page) {
         //判断内容不能为空
-        if (!StringUtil.isEmpty(search)) {
-            return this.setResultError("查询内容不能为空");
-        }
+        if (!StringUtil.isEmpty(search)) throw new RuntimeException("搜索内容不能为空");
 
-        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder();
-        //match通过值只能查询一个字段 和 multiMatch 通过值查询多个字段???
-        searchQueryBuilder.withQuery(QueryBuilders.multiMatchQuery(search,"title","brandName","categoryName"));
-        //高亮
-        searchQueryBuilder.withHighlightBuilder(ESHighLightUtil.getHighlightBuilder("title"));
-        //分页
-        searchQueryBuilder.withPageable(PageRequest.of(page-1,10));
 
-        SearchHits<GoodsDoc> searchHits = elasticsearchRestTemplate.search(searchQueryBuilder.build(), GoodsDoc.class);
+        SearchHits<GoodsDoc> searchHits = elasticsearchRestTemplate.search(this.getSearchQueryBuilder(search,page).build(), GoodsDoc.class);
 
         List<SearchHit<GoodsDoc>> highLightHit = ESHighLightUtil.getHighLightHit(searchHits.getSearchHits());
         //返回的数据
         List<GoodsDoc> collect = highLightHit.stream().map(searchHit -> searchHit.getContent()).collect(Collectors.toList());
 
-        //分页
+        //总条数&总页数
         long total = searchHits.getTotalHits();
         long totalPage = Double.valueOf(Math.ceil(Long.valueOf(total).doubleValue() / 10)).longValue();
 
-        Map<String, Long> map = new HashMap<>();
-        map.put("total",total);
-        map.put("totalPage",totalPage);
-        map.toString();
-        //传到前台是一个json字符串-->JSON.parse(message) obj.total,obj.totalPage
-        return this.setResult(HTTPStatus.OK,JSONUtil.toJsonString(map),collect);
+        //获得聚合数据
+        Aggregations aggregations = searchHits.getAggregations();
+        //获得分类集合
+        List<CategoryEntity> categoryList = this.getCategoryList(aggregations);
+        //获得品牌集合
+        List<BrandEntity> brandList = this.getBrandList(aggregations);
+
+        GoodsResponse goodsResponse = new GoodsResponse(total, totalPage, categoryList, brandList, collect);
+
+         return goodsResponse;
     }
+    //构建查询条件
+    private NativeSearchQueryBuilder getSearchQueryBuilder(String search, Integer page){
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder();
+        //match通过值只能查询一个字段 和 multiMatch 通过值查询多个字段???
+        searchQueryBuilder.withQuery(QueryBuilders.multiMatchQuery(search,"title","brandName","categoryName"));
+        //聚合(品牌-分类)
+        searchQueryBuilder.addAggregation(AggregationBuilders.terms("cid_agg").field("cid3"));
+        searchQueryBuilder.addAggregation(AggregationBuilders.terms("brand_agg").field("brandId"));
+
+        //高亮
+        searchQueryBuilder.withHighlightBuilder(ESHighLightUtil.getHighlightBuilder("title"));
+        //分页
+        searchQueryBuilder.withPageable(PageRequest.of(page-1,10));
+
+        return searchQueryBuilder;
+    }
+
+    //获得品牌集合
+    private List<BrandEntity> getBrandList(Aggregations aggregations){
+        Terms brand_agg = aggregations.get("brand_agg");
+
+        List<? extends Terms.Bucket> brand_aggBuckets = brand_agg.getBuckets();
+        List<String> brandList = brand_aggBuckets.stream().map(brandBuckets ->
+                brandBuckets.getKeyAsNumber().intValue() + ""
+        ).collect(Collectors.toList());
+        //通过品牌id集合去查询数据
+        Result<List<BrandEntity>> brandResult = brandFeign.getBrandById(String.join(",", brandList));
+        return brandResult.getData();
+    }
+
+    //获得分类集合
+    private List<CategoryEntity> getCategoryList(Aggregations aggregations){
+        Terms cid_agg = aggregations.get("cid_agg");
+        List<? extends Terms.Bucket> cid_aggBuckets = cid_agg.getBuckets();
+
+        //返回一个id的集合-->通过id的集合去查询数据
+        List<String> cidList = cid_aggBuckets.stream().map(cidBuckets -> {
+            Number keyAsNumber = cidBuckets.getKeyAsNumber();
+            return keyAsNumber.intValue() + "";
+
+            //String keyAsString = cidBuckets.getKeyAsString();
+        }).collect(Collectors.toList());
+
+        //通过分类id集合去查询数据 将List集合转换成,分隔的string字符串
+        String cidsStr = String.join(",", cidList);
+        Result<List<CategoryEntity>> categoryResult = categoryFeign.getCateByIds(cidsStr);
+
+        return categoryResult.getData();
+    }
+
 }
