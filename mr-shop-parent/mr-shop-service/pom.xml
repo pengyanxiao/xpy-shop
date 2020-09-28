@@ -16,6 +16,7 @@
     <modules>
         <module>mr-shop-service-xxx</module>
         <module>mr-shop-service-search</module>
+        <module>mr-shop-service-thymeleaf</module>
     </modules>
 
     <dependencies>

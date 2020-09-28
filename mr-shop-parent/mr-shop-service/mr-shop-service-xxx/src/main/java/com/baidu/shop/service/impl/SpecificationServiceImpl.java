@@ -3,13 +3,13 @@ package com.baidu.shop.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.shop.base.BaseApiService;
 import com.baidu.shop.base.Result;
+import com.baidu.shop.service.SpecificationServer;
 import com.baidu.shop.dto.SpecGroupDTO;
 import com.baidu.shop.dto.SpecParamDTO;
 import com.baidu.shop.entity.SpecGroupEntity;
 import com.baidu.shop.entity.SpecParamEntity;
 import com.baidu.shop.mapper.SpecGroupMapper;
 import com.baidu.shop.mapper.SpecParamMapper;
-import com.baidu.shop.service.SpecificationServer;
 import com.baidu.shop.utils.BaiduBrandUtil;
 import com.baidu.shop.utils.ObjectUtil;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,6 +97,15 @@ public class SpecificationServiceImpl extends BaseApiService implements Specific
         if(ObjectUtil.isNotNull(specParamDTO.getCid())){
             criteria.andEqualTo("cid",specParamDTO.getCid());
         }
+
+        if (ObjectUtil.isNotNull(specParamDTO.getSearching())) {
+            criteria.andEqualTo("searching",specParamDTO.getSearching());
+        }
+
+        if (ObjectUtil.isNotNull(specParamDTO.getGeneric())) {
+            criteria.andEqualTo("generic",specParamDTO.getGeneric());
+        }
+
 
         List<SpecParamEntity> list = specParamMapper.selectByExample(example);
 

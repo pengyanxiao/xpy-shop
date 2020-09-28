@@ -3,13 +3,13 @@ package com.baidu.shop.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.shop.base.BaseApiService;
 import com.baidu.shop.base.Result;
-import com.baidu.shop.dto.BrandDTO;
 import com.baidu.shop.dto.SkuDTO;
+import com.baidu.shop.service.BrandService;
+import com.baidu.shop.service.GoodsService;
+import com.baidu.shop.dto.BrandDTO;
 import com.baidu.shop.dto.SpuDTO;
 import com.baidu.shop.entity.*;
 import com.baidu.shop.mapper.*;
-import com.baidu.shop.service.BrandService;
-import com.baidu.shop.service.GoodsService;
 import com.baidu.shop.status.HTTPStatus;
 import com.baidu.shop.utils.BaiduBrandUtil;
 import com.baidu.shop.utils.ObjectUtil;
@@ -71,6 +71,11 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsService {
         //如果值为2的话不进行拼接查询,默认查询所有
         if (ObjectUtil.isNotNull(spuDTO.getSaleable()) && spuDTO.getSaleable() != 2) {
             criteria.andEqualTo("saleable", spuDTO.getSaleable());
+        }
+
+        //查询spu
+        if (ObjectUtil.isNotNull(spuDTO.getId())) {
+            criteria.andEqualTo("id",spuDTO.getId());
         }
 
         //排序

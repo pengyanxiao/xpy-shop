@@ -11,6 +11,8 @@
         <module name="mr-shop-basic-eureka-server" />
         <module name="mr-shop-service-api-search" />
         <module name="mr-shop-basics-upload-server" />
+        <module name="mr-shop-service-thymeleaf" />
+        <module name="mr-shop-service-api-template" />
         <module name="mr-shop-service-xxx" />
         <module name="mr-shop-service-search" />
         <module name="mr-shop-common-core" />
@@ -31,8 +33,10 @@
       <module name="mr-shop-service" options="-parameters" />
       <module name="mr-shop-service-api" options="-parameters" />
       <module name="mr-shop-service-api-search" options="-parameters" />
+      <module name="mr-shop-service-api-template" options="-parameters" />
       <module name="mr-shop-service-api-xxx" options="-parameters" />
       <module name="mr-shop-service-search" options="-parameters" />
+      <module name="mr-shop-service-thymeleaf" options="-parameters" />
       <module name="mr-shop-service-xxx" options="-parameters" />
     </option>
   </component>

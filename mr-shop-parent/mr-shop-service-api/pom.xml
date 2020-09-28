@@ -16,6 +16,8 @@
     <modules>
         <module>mr-shop-service-api-xxx</module>
         <module>mr-shop-service-api-search</module>
+        <module>mr-shop-service-api-template</module>
+
     </modules>
 
     <dependencies>

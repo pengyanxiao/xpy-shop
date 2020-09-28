@@ -6,7 +6,6 @@ import com.baidu.shop.dto.SpecGroupDTO;
 import com.baidu.shop.dto.SpecParamDTO;
 import com.baidu.shop.entity.SpecGroupEntity;
 import com.baidu.shop.entity.SpecParamEntity;
-import com.baidu.shop.utils.JSONUtil;
 import com.baidu.shop.validate.group.MrOperation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,7 +20,7 @@ public interface SpecificationServer {
 
     @ApiOperation(value = "查询规格组")
     @GetMapping(value = "specGroup/getSpecGroup")
-    Result<List<SpecGroupEntity>> getSpecGroup(SpecGroupDTO specGroupDTO);
+    Result<List<SpecGroupEntity>> getSpecGroup(@SpringQueryMap SpecGroupDTO specGroupDTO);
 
     @ApiOperation(value = "新增规格组")
     @PostMapping(value = "specGroup/save")

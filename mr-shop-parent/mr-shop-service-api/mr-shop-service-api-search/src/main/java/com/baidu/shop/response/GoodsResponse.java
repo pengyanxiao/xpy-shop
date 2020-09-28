@@ -1,15 +1,15 @@
 package com.baidu.shop.response;
 
-import com.baidu.shop.base.Result;
 import com.baidu.shop.document.GoodsDoc;
+import com.baidu.shop.base.Result;
 import com.baidu.shop.entity.BrandEntity;
 import com.baidu.shop.entity.CategoryEntity;
 import com.baidu.shop.status.HTTPStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.elasticsearch.http.HttpStats;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName GoodsResponse
@@ -30,12 +30,15 @@ public class GoodsResponse extends Result<List<GoodsDoc>>{
 
     private List<BrandEntity> brandList;
 
-    public GoodsResponse(Long total, Long totalPage, List<CategoryEntity> categoryList,
-                         List<BrandEntity> brandList, List<GoodsDoc> goodsDocs){
+    private Map<String, List<String>> specParamMap;
+
+    public GoodsResponse(Long total, Long totalPage,  List<BrandEntity> brandList,  List<CategoryEntity> categoryList,
+                         List<GoodsDoc> goodsDocs, Map<String, List<String>> specParamMap){
         super(HTTPStatus.OK,HTTPStatus.OK + "", goodsDocs);
         this.total = total;
         this.totalPage = totalPage;
         this.categoryList = categoryList;
         this.brandList = brandList;
+        this.specParamMap = specParamMap;
     }
 }
