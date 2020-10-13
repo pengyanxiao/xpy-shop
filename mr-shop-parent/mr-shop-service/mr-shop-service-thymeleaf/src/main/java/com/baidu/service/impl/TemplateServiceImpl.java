@@ -68,6 +68,7 @@ public class TemplateServiceImpl extends BaseApiService implements TemplateServi
 
         try {
             writer = new PrintWriter(file, "UTF-8");
+            templateEngine.process("item",context,writer);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -76,7 +77,6 @@ public class TemplateServiceImpl extends BaseApiService implements TemplateServi
             writer.close();
         }
 
-        templateEngine.process("item",context,writer);
 
         return this.setResultSuccess();
     }
@@ -90,6 +90,18 @@ public class TemplateServiceImpl extends BaseApiService implements TemplateServi
             spuDToList.stream().forEach(spuDTO -> {
                 createStaticHTMLTemplate(spuDTO.getId());
             });
+        }
+
+        return this.setResultSuccess();
+    }
+
+    @Override
+    public Result<JSONObject> deleteHTMLBySpuId(Integer spuId) {
+        File file = new File(staticHTMLPath + File.separator + spuId + ".html");
+
+        //file.delete() 删除文件-->boolean(true:删除成功 false:删除失败)
+        if(!file.delete()){
+            return this.setResultError("文件删除失败");
         }
 
         return this.setResultSuccess();

@@ -12,6 +12,7 @@
         <option value="$PROJECT_DIR$/mingrui-shop-commons/pom.xml" />
         <option value="$PROJECT_DIR$/mr-shop-commoms/pom.xml" />
         <option value="$PROJECT_DIR$/mr-shop-service-api/mr-aaa/pom.xml" />
+        <option value="$PROJECT_DIR$/mr-shop-service-api/shop-service-api-user/pom.xml" />
       </set>
     </option>
   </component>

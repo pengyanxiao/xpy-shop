@@ -3,6 +3,8 @@ package com.baidu.shop.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.shop.base.BaseApiService;
 import com.baidu.shop.base.Result;
+import com.baidu.shop.component.MrRabbitMQ;
+import com.baidu.shop.constant.MqMessageConstant;
 import com.baidu.shop.dto.SkuDTO;
 import com.baidu.shop.service.BrandService;
 import com.baidu.shop.service.GoodsService;
@@ -52,6 +54,9 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsService {
 
     @Resource
     private StockMapper stockMapper;
+
+    @Autowired
+    private MrRabbitMQ mrRabbitMQ;
 
     @Override
     public Result<List<SpuDTO>> getSpuInfo(SpuDTO spuDTO) {
@@ -147,29 +152,39 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsService {
 //        return this.setResultSuccess(hashMap);
     }
 
-    @Transactional
+    //@Transactional
     @Override
     public Result<JSONObject> save(SpuDTO spuDTO) {
         //System.out.println(spuDTO);
-        Date date = new Date();
-        //新增spu
-        SpuEntity spuEntity = BaiduBrandUtil.copyProperties(spuDTO, SpuEntity.class);
-        spuEntity.setSaleable(1);
-        spuEntity.setValid(1);
-        spuEntity.setCreateTime(date);
-        spuEntity.setLastUpdateTime(date);
-        spuGoodsMapper.insertSelective(spuEntity);
 
-        Integer spuId = spuEntity.getId();
-        //新增spuDetail
-        SpuDetailEntity spuDetailEntity = BaiduBrandUtil.copyProperties(spuDTO.getSpuDetail(), SpuDetailEntity.class);
-        spuDetailEntity.setSpuId(spuId);
-        spuDetailMapper.insertSelective(spuDetailEntity);
+        Integer spuId = saveTransactional(spuDTO);
 
-        //代码优化
-        this.addSkusAndStocks(spuDTO.getSkus(),spuId,date);
+        //发送消息mq
+        mrRabbitMQ.send(spuId + "", MqMessageConstant.SPU_ROUT_KEY_SAVE);
 
         return this.setResultSuccess();
+   }
+
+   @Transactional
+   public Integer saveTransactional(SpuDTO spuDTO){
+       Date date = new Date();
+       //新增spu
+       SpuEntity spuEntity = BaiduBrandUtil.copyProperties(spuDTO, SpuEntity.class);
+       spuEntity.setSaleable(1);
+       spuEntity.setValid(1);
+       spuEntity.setCreateTime(date);
+       spuEntity.setLastUpdateTime(date);
+       spuGoodsMapper.insertSelective(spuEntity);
+
+       Integer spuId = spuEntity.getId();
+       //新增spuDetail
+       SpuDetailEntity spuDetailEntity = BaiduBrandUtil.copyProperties(spuDTO.getSpuDetail(), SpuDetailEntity.class);
+       spuDetailEntity.setSpuId(spuId);
+       spuDetailMapper.insertSelective(spuDetailEntity);
+
+       //代码优化
+       this.addSkusAndStocks(spuDTO.getSkus(),spuId,date);
+       return spuEntity.getId();
    }
 
     @Override
@@ -184,10 +199,19 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsService {
         return this.setResultSuccess(list);
     }
 
-    @Transactional
+    //@Transactional
     @Override
     public Result<JSONObject> edit(SpuDTO spuDTO) {
         //System.out.println(spuDTO);
+        this.editTransaction(spuDTO);
+
+        //发送消息mq
+        mrRabbitMQ.send(spuDTO.getId() + "", MqMessageConstant.SPU_ROUT_KEY_UPDATE);
+
+        return this.setResultSuccess();
+    }
+    @Transactional
+    public void editTransaction(SpuDTO spuDTO){
         Date date = new Date();
         //修改spu
         SpuEntity spuEntity = BaiduBrandUtil.copyProperties(spuDTO, SpuEntity.class);
@@ -202,22 +226,28 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsService {
 
         //把新的数据新增到数据库 代码优化
         this.addSkusAndStocks(spuDTO.getSkus(),spuDTO.getId(),date);
+    }
+
+    //@Transactional
+    @Override
+    public Result<JSONObject> delete(Integer spuId) {
+        this.deleteTransaction(spuId);
+
+         //发送消息mq
+        mrRabbitMQ.send(spuId + "", MqMessageConstant.SPU_ROUT_KEY_DELETE);
 
         return this.setResultSuccess();
     }
-
     @Transactional
-    @Override
-    public Result<JSONObject> delete(Integer spuId) {
+    public void deleteTransaction(Integer spuId){
         //删除spu
         spuGoodsMapper.deleteByPrimaryKey(spuId);
         //删除spuDetail
         spuDetailMapper.deleteByPrimaryKey(spuId);
-        //删除skus
+
         //删除stock
         this.deleteSkuIdAndSpuId(spuId);
 
-        return this.setResultSuccess();
     }
 
     //商品上架与下架
