@@ -17,6 +17,7 @@
         <module>mr-shop-service-api-xxx</module>
         <module>mr-shop-service-api-search</module>
         <module>mr-shop-service-api-template</module>
+        <module>mr-shop-service-api-user</module>
 
     </modules>
 
