@@ -25,7 +25,6 @@ import java.util.UUID;
 @RequestMapping(value = "uploadImg")
 public class UploadController extends BaseApiService {
 
-
     //linux系统的上传目录
     @Value(value = "${mr.upload.path.windows}")
     private String windowsPath;

@@ -17,6 +17,7 @@
         <module>mr-shop-basic-eureka-server</module>
         <module>mr-shop-basic-zuul-server</module>
         <module>mr-shop-basics-upload-server</module>
+        <module>mr-shop-basic-user-oauth</module>
     </modules>
 
 

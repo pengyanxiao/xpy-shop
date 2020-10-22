@@ -19,4 +19,8 @@ public class HTTPStatus {
 
     public static final int VALIDATE_CODE_ERROR = 5003;//手机验证码错误
 
+    public static final int VALIDATE_PASSWORD_ERROR = 5004;//用户名/密码错误
+
+    public static final int VERIFY_ERROR = 403;//用户验证失败
+
 }

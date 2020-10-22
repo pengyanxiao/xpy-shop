@@ -7,17 +7,24 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="mr-shop-service-api-xxx" />
+        <module name="mr-shop-service-order" />
         <module name="mr-shop-basic-zuul-server" />
-        <module name="mr-shop-service-user" />
+        <module name="mr--shop-service-api-order" />
+        <module name="mr-shop-basic-user-oauth" />
         <module name="mr-shop-basic-eureka-server" />
         <module name="mr-shop-service-api-search" />
-        <module name="mr-shop-basics-upload-server" />
+        <module name="mr-shop-service-api-car" />
         <module name="mr-shop-service-thymeleaf" />
+        <module name="mr-shop-service-xxx" />
+        <module name="mr-shop-common-core" />
+        <module name="mr-shop-service-car" />
+        <module name="mr-shop-service-api-pay" />
+        <module name="mr-shop-service-user" />
+        <module name="mr-shop-basics-upload-server" />
         <module name="mr-shop-service-api-template" />
         <module name="mr-shop-service-api-user" />
-        <module name="mr-shop-service-xxx" />
+        <module name="mr-shop-common-oauth" />
         <module name="mr-shop-service-search" />
-        <module name="mr-shop-common-core" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -26,18 +33,25 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="mr--shop-service-api-order" options="-parameters" />
       <module name="mr-shop-basic-eureka-server" options="-parameters" />
+      <module name="mr-shop-basic-user-oauth" options="-parameters" />
       <module name="mr-shop-basic-zuul-server" options="-parameters" />
       <module name="mr-shop-basics" options="-parameters" />
       <module name="mr-shop-basics-upload-server" options="-parameters" />
       <module name="mr-shop-common-core" options="-parameters" />
+      <module name="mr-shop-common-oauth" options="-parameters" />
       <module name="mr-shop-commons" options="-parameters" />
       <module name="mr-shop-service" options="-parameters" />
       <module name="mr-shop-service-api" options="-parameters" />
+      <module name="mr-shop-service-api-car" options="-parameters" />
+      <module name="mr-shop-service-api-pay" options="-parameters" />
       <module name="mr-shop-service-api-search" options="-parameters" />
       <module name="mr-shop-service-api-template" options="-parameters" />
       <module name="mr-shop-service-api-user" options="-parameters" />
       <module name="mr-shop-service-api-xxx" options="-parameters" />
+      <module name="mr-shop-service-car" options="-parameters" />
+      <module name="mr-shop-service-order" options="-parameters" />
       <module name="mr-shop-service-search" options="-parameters" />
       <module name="mr-shop-service-thymeleaf" options="-parameters" />
       <module name="mr-shop-service-user" options="-parameters" />

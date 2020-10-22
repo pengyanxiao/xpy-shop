@@ -18,6 +18,8 @@
         <module>mr-shop-service-search</module>
         <module>mr-shop-service-thymeleaf</module>
         <module>mr-shop-service-user</module>
+        <module>mr-shop-service-car</module>
+        <module>mr-shop-service-order</module>
     </modules>
 
     <dependencies>

@@ -1,4 +1,3 @@
-</html><!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -196,16 +195,16 @@
                             <div class="fl title">
                                 <div class="control-group">
                                     <div class="controls">
-                                        <input autocomplete="off" type="text" disabled value="1" minnum="1" class="itxt" />
-                                        <a href="javascript:void(0)" class="increment plus">+</a>
-                                        <a href="javascript:void(0)" class="increment mins">-</a>
+                                        <input autocomplete="off" type="text" v-model="num" disabled value="1" minnum="1" class="itxt" />
+                                        <a href="javascript:void(0)" class="increment plus" @click="increment">+</a>
+                                        <a href="javascript:void(0)" class="increment mins" @click="decrement">-</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="fl">
                                 <ul class="btn-choose unstyled">
                                     <li>
-                                        <a href="success-cart.html" target="_blank" class="sui-btn  btn-danger addshopcar">加入购物车</a>
+                                        <a href="/success-cart.html" @click.pervent="addCar" target="_blank" class="sui-btn  btn-danger addshopcar">加入购物车</a>
                                     </li>
                                 </ul>
                             </div>
@@ -639,10 +638,63 @@
             indexes,
             spuDetailInfo,
             specGroup,
-            specGroupDTOList
+            specGroupDTOList,
+            num:1
         },
+        methods : {
+            increment(){
+                if(this.sku.stock > this.num) this.num++;
+            },
+            decrement(){
+                if(this.num > 1) this.num--;
+            },
+            addCar(){
+                mrshop.checkUserLogin().then(resp => {
 
+                    mrshop.http.post('/car/car/addCar',{
+                        skuId:this.sku.id,
+                        num:this.num
+                    }).then(resp => {
+
+                        if(resp.data.code == 200){
+                            window.location.href = '../success-cart.html';
+                        }
+
+                    }).catch(error => console.log(error))
+                }).catch(error => {
+
+                    let carList = mrshop.store.get(mrshop.CLIENT_CAR_LIST) || [];
+                    let car = carList.find(car => car.skuId == this.sku.id);
+                    if(car){
+                        car.num += this.num;
+                    }else{
+                        car = {
+                            skuId:this.sku.id,
+                            title:this.sku.title,
+                            image:this.images.length > 0 ? this.images[0] : '',
+                            price:this.sku.price,
+                            num:this.num,
+                            ownSpec:JSON.stringify(this.ownSpec)
+                        };
+                        carList.push(car);
+                    }
+                    mrshop.store.set(mrshop.CLIENT_CAR_LIST,carList);
+                    window.location.href = '../success-cart.html';
+
+                });
+                //window.location.href = '../success-cart.html';
+            },
+        },
         computed:{
+            ownSpec(){
+                let ownSpec = JSON.parse(this.sku.ownSpec);
+                let obj = {};
+                Object.keys(ownSpec).forEach(key => {
+                    obj[this.specParamMap[key]] = ownSpec[key];
+                })
+                return obj;
+            },
+
             sku(){
 
                 //skus-->数组 通过0_0_0

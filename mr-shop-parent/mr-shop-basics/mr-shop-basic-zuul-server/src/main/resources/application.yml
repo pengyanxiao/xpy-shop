@@ -12,7 +12,10 @@ zuul:
   routes:
     xxx-service: /manage/**
     search-server: /search/**
-    user-server: /user-conter/**
+    user-server: /user-conter/**  #用户请求
+    oauth-server: /oauth/** #登录请求
+    car-server: /car/** #购物车
+    order-server: /order/** #订单请求
     # 路由名称
 #    api-xxx:
 #      # 声明将所有以/api-ribbon/的请求都转发到eureka-ribbon的服务中
@@ -31,6 +34,9 @@ zuul:
   # 忽略上传服务
   ignored-services:
     -upload-server
+  #登录
+  add-host-header: true #将域名添加到请求头中
+  sensitive-headers:    #set-cookie方法被zuul禁止,将属性设置为空,代表启用set-cookie
 
 
 #配置负载
@@ -53,3 +59,11 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+mrshop:
+  #声明不进行拦截的请求用,分隔
+  filter:
+    excludes: /api/oauth/oauth/login,/api/user-center/user/register,/api/oauth/oauth/verify
+  jwt:
+    pubKeyPath: D:\idea-projects\rea.pub # 公钥地址(私钥加密,公钥解密)
+    cookieName: MRSHOP_TOKEN

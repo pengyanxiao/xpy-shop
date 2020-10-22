@@ -15,7 +15,6 @@ import com.baidu.shop.status.HTTPStatus;
 import com.baidu.shop.utils.BCryptUtil;
 import com.baidu.shop.utils.BaiduBrandUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.mapper.entity.Example;
 
@@ -37,7 +36,7 @@ public class UserServiceImpl extends BaseApiService implements UserService {
     @Resource
     private UserMapper userMapper;
 
-    @Autowired
+    @Resource
     private RedisRepository redisRepository;
 
     @Override
