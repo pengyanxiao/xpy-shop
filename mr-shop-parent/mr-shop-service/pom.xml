@@ -20,6 +20,7 @@
         <module>mr-shop-service-user</module>
         <module>mr-shop-service-car</module>
         <module>mr-shop-service-order</module>
+        <module>mr-shop-service-pay</module>
     </modules>
 
     <dependencies>

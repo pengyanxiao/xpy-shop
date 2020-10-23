@@ -23,6 +23,7 @@
         <module name="mr-shop-basics-upload-server" />
         <module name="mr-shop-service-api-template" />
         <module name="mr-shop-service-api-user" />
+        <module name="mr-shop-service-pay" />
         <module name="mr-shop-common-oauth" />
         <module name="mr-shop-service-search" />
       </profile>
@@ -52,6 +53,7 @@
       <module name="mr-shop-service-api-xxx" options="-parameters" />
       <module name="mr-shop-service-car" options="-parameters" />
       <module name="mr-shop-service-order" options="-parameters" />
+      <module name="mr-shop-service-pay" options="-parameters" />
       <module name="mr-shop-service-search" options="-parameters" />
       <module name="mr-shop-service-thymeleaf" options="-parameters" />
       <module name="mr-shop-service-user" options="-parameters" />

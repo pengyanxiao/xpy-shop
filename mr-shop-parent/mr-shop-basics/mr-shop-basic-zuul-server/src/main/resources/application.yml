@@ -16,6 +16,7 @@ zuul:
     oauth-server: /oauth/** #登录请求
     car-server: /car/** #购物车
     order-server: /order/** #订单请求
+    pay-server: /pay/** #支付请求
     # 路由名称
 #    api-xxx:
 #      # 声明将所有以/api-ribbon/的请求都转发到eureka-ribbon的服务中
